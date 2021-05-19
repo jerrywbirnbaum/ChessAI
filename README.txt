@@ -1,0 +1,2 @@
+Jerry Birnbaum
+Chess AI
