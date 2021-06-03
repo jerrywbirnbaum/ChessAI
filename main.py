@@ -3,6 +3,7 @@ import random
 import os
 import numpy as np
 from pieces import *
+from chessBoard import *
 
 def ChessGame():
     dis_width = 512
@@ -20,6 +21,7 @@ def ChessGame():
     clock=pygame.time.Clock()
     gameFolder = os.path.dirname(__file__)
     imgFolder = os.path.join(gameFolder,'img')
+    gameDisplay.fill(brown)
 
     #sprite images
     blackPawnImg=pygame.image.load(os.path.join(imgFolder,'blackpawn.png'))
@@ -34,11 +36,13 @@ def ChessGame():
     whiteQueenImg = pygame.image.load((os.path.join(imgFolder,'whitequeen.png')))
     blackKingImg=pygame.image.load(os.path.join(imgFolder,'blackking.png'))
     whiteKingImg = pygame.image.load((os.path.join(imgFolder,'whiteking.png')))
-    gameDisplay.fill(brown)
+
 
     #init sprites
     all_sprites = pygame.sprite.Group()
-    pawna7=Pawn(0,64,blackPawnImg)
+    board= ChessBoard(gameDisplay)
+    #pawna7=Pawn(0,64,blackPawnImg,gameDisplay)
+    '''
     pawnb7=Pawn(64,64,blackPawnImg)
     pawnc7=Pawn(128,64,blackPawnImg)
     pawnd7=Pawn(192,64,blackPawnImg)
@@ -55,7 +59,8 @@ def ChessGame():
     pawnf2=Pawn(320,384,whitePawnImg)
     pawng2=Pawn(384,384,whitePawnImg)
     pawnh2=Pawn(448,384,whitePawnImg)
-
+    '''
+    '''
     bishopc8=Bishop(128,0,blackBishopImg)
     bishopf8=Bishop(320,0,blackBishopImg)
     bishopc1=Bishop(128,448,whiteBishopImg)
@@ -75,12 +80,14 @@ def ChessGame():
     whitequeen=Queen(192,448,whiteQueenImg)
     blackking=King(256,0,blackKingImg)
     whiteking=King(256,448,whiteKingImg)
+    '''
 
-
-    all_sprites.add(pawna7,pawnb7,pawnc7,pawnd7,pawne7,pawnf7,pawng7,pawnh7)
-    all_sprites.add(pawna2,pawnb2,pawnc2,pawnd2,pawne2,pawnf2,pawng2,pawnh2)
-    all_sprites.add(bishopc8,bishopf8,bishopc1,bishopf1)
-    all_sprites.add(knightb1,knightb8,knightg1,knightg8,rooka1,rooka8,rookh1,rookh8,blackqueen,whitequeen,blackking,whiteking)
+    all_sprites = board.returnSprites()
+    #all_sprites.add(pawna7)
+    #all_sprites.add(pawna7,pawnb7,pawnc7,pawnd7,pawne7,pawnf7,pawng7,pawnh7)
+    #all_sprites.add(pawna2,pawnb2,pawnc2,pawnd2,pawne2,pawnf2,pawng2,pawnh2)
+    #all_sprites.add(bishopc8,bishopf8,bishopc1,bishopf1)
+    #all_sprites.add(knightb1,knightb8,knightg1,knightg8,rooka1,rooka8,rookh1,rookh8,blackqueen,whitequeen,blackking,whiteking)
 
     #Draw chess board
     increment = dis_width/8
@@ -103,8 +110,9 @@ def ChessGame():
             if event.type == pygame.QUIT:
                 crashed = True
                 print(event)
+            if event.type == pygame.MOUSEBUTTONUP:
+                board.mouseClick(pygame.mouse.get_pos())
         pygame.display.update()
-        pawne2.select()
         all_sprites.update()
         all_sprites.draw(gameDisplay)
         clock.tick(60)
