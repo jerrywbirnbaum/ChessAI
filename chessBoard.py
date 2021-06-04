@@ -23,6 +23,9 @@ class ChessBoard ():
         self.all_sprites = pygame.sprite.Group()
         self.board=[[0]*8]*8
         self.board[1][0]= Pawn(0,64,blackPawnImg,self.gameDisplay)
+        self.board[0][7]= Rook(448,0,blackRookImg,self.gameDisplay)
+        self.board[0][2]= Bishop(128,0,blackBishopImg,self.gameDisplay)
+        self.board[0][1]=Knight(64,0,blackKnightImg,self.gameDisplay)
         self.isPieceSelected = False
 
         for i in range(8):
@@ -31,6 +34,11 @@ class ChessBoard ():
                     self.all_sprites.add(self.board[i][j])
     def checkLegalMove(self):
         PawnInstance= Pawn(0,0,blackPawnImg,self.gameDisplay)
+        KnightInstance= Knight(0,0,blackPawnImg,self.gameDisplay)
+        BishopInstance= Bishop(0,0,blackPawnImg,self.gameDisplay)
+        RookInstance= Rook(0,0,blackPawnImg,self.gameDisplay)
+
+
         if type(PawnInstance)==type(self.pieceSelected):
             if(self.startPosRow-self.endPosRow)== -1 and self.startPosCol==self.endPosCol:
                 return True
@@ -38,12 +46,26 @@ class ChessBoard ():
                 return True
             else:
                 return False
-        return False
+        elif type(KnightInstance)==type(self.pieceSelected):
+            return True
+        elif type(BishopInstance)==type(self.pieceSelected):
+            if  ((self.startPosCol-self.endPosCol) == (self.startPosRow - self.endPosRow)) or ((self.startPosCol-self.endPosCol) == -(self.startPosRow - self.endPosRow)):
+                return True
+            else:
+                return False
+        elif type(RookInstance)==type(self.pieceSelected):
+            if self.startPosCol==self.endPosCol or self.startPosRow == self.endPosRow:
+                return True
+            else:
+                return False
+        else:
+            return False
     def mouseClick(self,pos):
         if not self.isPieceSelected:
             x,y = pos
             col = int(x/64)
             row = int(y/64)
+            print(row,col)
             self.startPosRow = row
             self.startPosCol = col
             if self.board[row][col] != 0:
@@ -51,7 +73,6 @@ class ChessBoard ():
                 self.pieceSelected=self.board[row][col]
                 self.board[row][col] = 0
                 self.isPieceSelected = True
-                pygame.draw.circle(self.gameDisplay,(0,0,0),pos,20)
         else:
             x,y = pos
             col = int(x/64)

@@ -56,47 +56,22 @@ class Pawn(Piece):
     def print(self):
         print("imma pawn")
 
-class Bishop(pygame.sprite.Sprite):
-    def __init__(self,x,y,img):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((64, 64))
-        self.image = img
-        self.image.set_colorkey(brown)
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
+class Bishop(Piece):
+    def __init__(self,x,y,img,gameDisplay):
+        super().__init__(x,y,img,gameDisplay)
 
-class Knight(pygame.sprite.Sprite):
-    def __init__(self,x,y,img):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((64, 64))
-        self.image = img
-        self.image.set_colorkey(brown)
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
+class Knight(Piece):
+    def __init__(self,x,y,img,gameDisplay):
+        super().__init__(x,y,img,gameDisplay)
 
-class Rook(pygame.sprite.Sprite):
-    def __init__(self,x,y,img):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((64, 64))
-        self.image = img
-        self.image.set_colorkey(brown)
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
+class Rook(Piece):
+    def __init__(self,x,y,img,gameDisplay):
+        super().__init__(x,y,img,gameDisplay)
 
-class Queen(pygame.sprite.Sprite):
-    def __init__(self,x,y,img):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((64, 64))
-        self.image = img
-        self.image.set_colorkey(brown)
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
+class Queen(Piece):
+    def __init__(self,x,y,img,gameDisplay):
+        super().__init__(x,y,img,gameDisplay)
 
-class King(pygame.sprite.Sprite):
-    def __init__(self,x,y,img):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((64, 64))
-        self.image = img
-        self.image.set_colorkey(brown)
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
+class King(Piece):
+    def __init__(self,x,y,img,gameDisplay):
+        super().__init__(x,y,img,gameDisplay)
