@@ -29,24 +29,41 @@ class ChessBoard ():
             for j in range(8):
                 if(self.board[i][j] != 0):
                     self.all_sprites.add(self.board[i][j])
+    def checkLegalMove(self):
+        PawnInstance= Pawn(0,0,blackPawnImg,self.gameDisplay)
+        if type(PawnInstance)==type(self.pieceSelected):
+            if(self.startPosRow-self.endPosRow)== -1 and self.startPosCol==self.endPosCol:
+                return True
+            elif(self.endPosRow-self.startPosRow) == 2 and self.pieceSelected.hasMoved == False:
+                return True
+            else:
+                return False
+        return False
     def mouseClick(self,pos):
         if not self.isPieceSelected:
             x,y = pos
             col = int(x/64)
             row = int(y/64)
+            self.startPosRow = row
+            self.startPosCol = col
             if self.board[row][col] != 0:
                 self.board[row][col].select()
                 self.pieceSelected=self.board[row][col]
                 self.board[row][col] = 0
                 self.isPieceSelected = True
+                pygame.draw.circle(self.gameDisplay,(0,0,0),pos,20)
         else:
             x,y = pos
             col = int(x/64)
             row = int(y/64)
-            self.board[row][col]=self.pieceSelected
-            self.pieceSelected.unselect()
-            self.pieceSelected = 0
-            self.isPieceSelected = False
+            self.endPosRow =row
+            self.endPosCol = col
+            if self.checkLegalMove():
+                self.board[row][col]=self.pieceSelected
+                self.pieceSelected.hasMoved = True
+                self.pieceSelected.unselect()
+                self.pieceSelected = 0
+                self.isPieceSelected = False
     def returnBoard(self):
         return self.board
     def returnSprites(self):

@@ -8,7 +8,7 @@ brown = (77, 38, 38)
 tan = (121,72,57)
 pygame.init()
 
-class Pawn(pygame.sprite.Sprite):
+class Piece(pygame.sprite.Sprite):
     def __init__(self,x,y,img,gameDisplay):
         self.gameDisplay=gameDisplay
         pygame.sprite.Sprite.__init__(self)
@@ -18,6 +18,7 @@ class Pawn(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
         self.isSelected= False
+        self.hasMoved=False
     def select(self):
         self.isSelected=True
     def unselect(self):
@@ -48,6 +49,12 @@ class Pawn(pygame.sprite.Sprite):
         crashed = False
         if(self.isSelected):
             self.rect.center = pos
+
+class Pawn(Piece):
+    def __init__(self,x,y,img,gameDisplay):
+        super().__init__(x,y,img,gameDisplay)
+    def print(self):
+        print("imma pawn")
 
 class Bishop(pygame.sprite.Sprite):
     def __init__(self,x,y,img):
