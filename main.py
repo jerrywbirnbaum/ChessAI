@@ -59,8 +59,6 @@ def ChessGame():
     pawnf2=Pawn(320,384,whitePawnImg)
     pawng2=Pawn(384,384,whitePawnImg)
     pawnh2=Pawn(448,384,whitePawnImg)
-    '''
-    '''
     bishopc8=Bishop(128,0,blackBishopImg)
     bishopf8=Bishop(320,0,blackBishopImg)
     bishopc1=Bishop(128,448,whiteBishopImg)

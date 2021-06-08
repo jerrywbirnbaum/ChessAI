@@ -10,11 +10,17 @@ pygame.init()
 
 class Piece(pygame.sprite.Sprite):
     def __init__(self,x,y,img,gameDisplay):
+        self.row = int(y/64)
+        self.col = int(x/64)
+        if(self.row < 4):
+            self.isBlack=True
+        else:
+            self.isBlack=False
         self.gameDisplay=gameDisplay
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((64, 64))
         self.image = img
-        self.image.set_colorkey(brown)
+        #self.image.set_colorkey(brown)
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
         self.isSelected= False
@@ -27,6 +33,8 @@ class Piece(pygame.sprite.Sprite):
         x = int(x/64) * 64
         y = int(y/64) * 64
         pos = x,y
+        self.row = int(y/64)
+        self.col = int(x/64)
         self.rect.topleft = pos
     def update(self):
         pos = pygame.mouse.get_pos()
@@ -49,29 +57,162 @@ class Piece(pygame.sprite.Sprite):
         crashed = False
         if(self.isSelected):
             self.rect.center = pos
+    def getPeacefulMoves(self,board):
+        legalMoves = []
+        return legalMoves
+
 
 class Pawn(Piece):
     def __init__(self,x,y,img,gameDisplay):
         super().__init__(x,y,img,gameDisplay)
     def print(self):
         print("imma pawn")
+    def getPeacefulMoves(self,board):
+        legalMoves = []
+        if self.isBlack:
+            if board[self.row+1][self.col]==0:
+                legalMoves.append((self.row+1,self.col))
+            if self.hasMoved == False and board[self.row+2][self.col] == 0 and board[self.row+1][self.col]==0:
+                legalMoves.append((self.row+2,self.col))
+        else:
+            if board[self.row-1][self.col]==0:
+                legalMoves.append((self.row-1,self.col))
+            if self.hasMoved == False and board[self.row-2][self.col] == 0 and board[self.row-1][self.col]==0:
+                legalMoves.append((self.row-2,self.col))
+        return legalMoves
+
 
 class Bishop(Piece):
     def __init__(self,x,y,img,gameDisplay):
         super().__init__(x,y,img,gameDisplay)
+    def getPeacefulMoves(self,board):
+        legalMoves = []
+        for i in range(8):
+            if (self.row+i < 8 and self.col+i<8) and board[self.row+i][self.col+i] == 0:
+                legalMoves.append((self.row+i,self.col+i))
+            else:
+                break
+        for i in range(8):
+            if (self.row-i >= 0 and self.col+i<8) and board[self.row-i][self.col+i] == 0:
+                legalMoves.append((self.row-i,self.col+i))
+            else:
+                break
+        for i in range(8):
+            if (self.row+i < 8 and self.col-i >=0) and board[self.row+i][self.col-i] == 0:
+                legalMoves.append((self.row+i,self.col-i))
+            else:
+                break
+        for i in range(8):
+            if (self.row-i >=0 and self.col-i>=0) and board[self.row-i][self.col-i] == 0:
+                legalMoves.append((self.row-i,self.col-i))
+            else:
+                break
+        return legalMoves
 
 class Knight(Piece):
     def __init__(self,x,y,img,gameDisplay):
         super().__init__(x,y,img,gameDisplay)
+    def getPeacefulMoves(self,board):
+        legalMoves = []
+        knightMovesCol = [-2,-2,-1,-1,1,1,2,2]
+        knightMovesRow = [-1,1,-2,2,-2,2,-1,1]
+        for i in range(8):
+            if(self.row+knightMovesRow[i]<8 and self.row+knightMovesRow[i]>=0) and (self.col+knightMovesCol[i]<8 and self.col+knightMovesCol[i]>=0) and board[self.row+knightMovesRow[i]][self.col+knightMovesCol[i]] == 0:
+                legalMoves.append((self.row+knightMovesRow[i],self.col+knightMovesCol[i]))
+        return legalMoves
 
 class Rook(Piece):
     def __init__(self,x,y,img,gameDisplay):
         super().__init__(x,y,img,gameDisplay)
+    def getPeacefulMoves(self,board):
+        legalMoves = []
+        for i in range(8):
+            if (self.row+i < 8) and board[self.row+i][self.col] == 0:
+                legalMoves.append((self.row+i,self.col))
+            else:
+                break
+        for i in range(8):
+            if (self.row-i >= 0) and board[self.row-i][self.col] == 0:
+                legalMoves.append((self.row-i,self.col))
+            else:
+                break
+        for i in range(8):
+            if (self.col+i <8) and board[self.row][self.col+i] == 0:
+                legalMoves.append((self.row,self.col+i))
+            else:
+                break
+        for i in range(8):
+            if (self.col-i>=0) and board[self.row][self.col-i] == 0:
+                legalMoves.append((self.row,self.col-i))
+            else:
+                break
+        return legalMoves
 
 class Queen(Piece):
     def __init__(self,x,y,img,gameDisplay):
         super().__init__(x,y,img,gameDisplay)
+    def getPeacefulMoves(self,board):
+        legalMoves = []
+        for i in range(8):
+            if (self.row+i < 8) and board[self.row+i][self.col] == 0:
+                legalMoves.append((self.row+i,self.col))
+            else:
+                break
+        for i in range(8):
+            if (self.row-i >= 0) and board[self.row-i][self.col] == 0:
+                legalMoves.append((self.row-i,self.col))
+            else:
+                break
+        for i in range(8):
+            if (self.col+i <8) and board[self.row][self.col+i] == 0:
+                legalMoves.append((self.row,self.col+i))
+            else:
+                break
+        for i in range(8):
+            if (self.col-i>=0) and board[self.row][self.col-i] == 0:
+                legalMoves.append((self.row,self.col-i))
+            else:
+                break
+        for i in range(8):
+            if (self.row+i < 8 and self.col+i<8) and board[self.row+i][self.col+i] == 0:
+                legalMoves.append((self.row+i,self.col+i))
+            else:
+                break
+        for i in range(8):
+            if (self.row-i >= 0 and self.col+i<8) and board[self.row-i][self.col+i] == 0:
+                legalMoves.append((self.row-i,self.col+i))
+            else:
+                break
+        for i in range(8):
+            if (self.row+i < 8 and self.col-i >=0) and board[self.row+i][self.col-i] == 0:
+                legalMoves.append((self.row+i,self.col-i))
+            else:
+                break
+        for i in range(8):
+            if (self.row-i >=0 and self.col-i>=0) and board[self.row-i][self.col-i] == 0:
+                legalMoves.append((self.row-i,self.col-i))
+            else:
+                break
+        return legalMoves
 
 class King(Piece):
     def __init__(self,x,y,img,gameDisplay):
         super().__init__(x,y,img,gameDisplay)
+    def getPeacefulMoves(self,board):
+        legalMoves=[]
+        if(self.row+1 < 8) and board[self.row+1][self.col] == 0:
+            legalMoves.append((self.row+1,self.col))
+        elif(self.col+1 < 8) and board[self.row][self.col+1] == 0:
+            legalMoves.append((self.row,self.col+1))
+        elif(self.row-1 >=0) and board[self.row-1][self.col] == 0:
+            legalMoves.append((self.row-1,self.col))
+        elif(self.col-1 >=0) and board[self.row][self.col-1] == 0:
+            legalMoves.append((self.row,self.col-1))
+        elif(self.row+1 < 8)and (self.col+1 <8) and board[self.row+1][self.col+1] == 0:
+            legalMoves.append((self.row+1,self.col+1))
+        elif(self.row+1 < 8)and (self.col-1 >= 0) and board[self.row+1][self.col-1] == 0:
+            legalMoves.append((self.row+1,self.col-1))
+        elif(self.row-1 >= 0)and (self.col+1 <8) and board[self.row-1][self.col+1] == 0:
+            legalMoves.append((self.row-1,self.col+1))
+        elif(self.row-1 >=0)and (self.col-1 >= 0) and board[self.row-1][self.col-1] == 0:
+            legalMoves.append((self.row-1,self.col-1))
