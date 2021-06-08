@@ -23,6 +23,7 @@ class ChessBoard ():
         self.all_sprites = pygame.sprite.Group()
         self.board=[[0 for i in range(8)]for j in range(8)]
 
+        #init pieces
         self.board[1][0]=Pawn(0,64,blackPawnImg,self.gameDisplay)
         self.board[1][1]=Pawn(64,64,blackPawnImg,self.gameDisplay)
         self.board[1][2]=Pawn(128,64,blackPawnImg,self.gameDisplay)
@@ -71,7 +72,12 @@ class ChessBoard ():
         if (self.endPosRow,self.endPosCol) in (self.pieceSelected.getPeacefulMoves(self.board)):
             return True
         return False
-
+    def checkCapture(self):
+        if (self.endPosRow,self.endPosCol) in (self.pieceSelected.getCaptureMoves(self.board)):
+            self.board[self.endPosRow][self.endPosCol].kill()
+            self.board[self.endPosRow][self.endPosCol] = self.pieceSelected
+            return True
+        return False
     def mouseClick(self,pos):
         if not self.isPieceSelected:
             x,y = pos
@@ -91,6 +97,12 @@ class ChessBoard ():
             self.endPosRow =row
             self.endPosCol = col
             if self.checkLegalMove():
+                self.board[row][col]=self.pieceSelected
+                self.pieceSelected.hasMoved = True
+                self.pieceSelected.unselect()
+                self.pieceSelected = 0
+                self.isPieceSelected = False
+            elif self.checkCapture():
                 self.board[row][col]=self.pieceSelected
                 self.pieceSelected.hasMoved = True
                 self.pieceSelected.unselect()
