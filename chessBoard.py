@@ -22,7 +22,7 @@ class ChessBoard ():
         self.gameDisplay=gameDisplay
         self.all_sprites = pygame.sprite.Group()
         self.board=[[0 for i in range(8)]for j in range(8)]
-
+        self.isBlacksTurn=False
         #init pieces
         self.board[1][0]=Pawn(0,64,blackPawnImg,self.gameDisplay)
         self.board[1][1]=Pawn(64,64,blackPawnImg,self.gameDisplay)
@@ -71,6 +71,10 @@ class ChessBoard ():
                 if(self.board[i][j] != 0):
                     self.all_sprites.add(self.board[i][j])
     def checkLegalMove(self):
+        #print(self.endPosRow,self.endPosCol)
+        #print(self.startPosRow,self.startPosCol)
+
+        #print(self.pieceSelected.getPeacefulMoves(self.board))
         if (self.endPosRow,self.endPosCol) in (self.pieceSelected.getPeacefulMoves(self.board)):
             return True
         return False
@@ -82,6 +86,30 @@ class ChessBoard ():
             #self.tempBoard[self.endPosRow][self.endPosCol] = self.pieceSelected
             return True
         return False
+    def checkKingInCheck(self):
+        if self.whiteKingInCheck(self.tempBoard):
+            print("Check")
+            return True
+        else:
+            return False
+        PawnInstance = Pawn(0,0,whitePawnImg,0)
+        KnightInstance = Knight(0,0,whitePawnImg,0)
+        BishopInstance = Bishop(0,0,whitePawnImg,0)
+        QueenInstance = Queen(0,0,whitePawnImg,0)
+        RookInstance = Rook(0,0,whitePawnImg,0)
+
+        if type(self.pieceSelected == type(PawnInstance)) and (self.endPosRow,self.endPosCol) in self.whiteKingInCheck(self.tempBoard)[0]:
+            return True
+        elif type(self.pieceSelected == type(KnightInstance)) and (self.endPosRow,self.endPosCol) in self.whiteKingInCheck(self.tempBoard)[1]:
+            return True
+        elif type(self.pieceSelected == type(BishopInstance)) and (self.endPosRow,self.endPosCol) in self.whiteKingInCheck(self.tempBoard)[2]:
+            return True
+        elif type(self.pieceSelected == type(RookInstance)) and (self.endPosRow,self.endPosCol) in self.whiteKingInCheck(self.tempBoard)[3]:
+            return True
+        elif type(self.pieceSelected == type(QueenInstance)) and (self.endPosRow,self.endPosCol) in self.whiteKingInCheck(self.tempBoard)[4]:
+            return True
+        else:
+            return False
     def mouseClick(self,pos):
         if not self.isPieceSelected:
             x,y = pos
@@ -89,33 +117,39 @@ class ChessBoard ():
             row = int(y/64)
             self.startPosRow = row
             self.startPosCol = col
-            if self.board[row][col] != 0:
+            if self.board[row][col] != 0 and self.board[row][col].isBlack == self.isBlacksTurn:
                 self.board[row][col].select()
                 self.pieceSelected=self.board[row][col]
                 self.board[row][col] = 0
                 self.isPieceSelected = True
+                self.isBlacksTurn = not self.isBlacksTurn
         else:
             x,y = pos
             col = int(x/64)
             row = int(y/64)
             self.endPosRow =row
             self.endPosCol = col
-            while(True):
-                if self.checkLegalMove():
-                    self.tempBoard[row][col]=self.pieceSelected
-                elif self.checkCapture():
-                    self.tempBoard[row][col]=self.pieceSelected
-                if not self.whiteKingInCheck(self.tempBoard):
+            self.tempBoard = self.board
+            #print(self.tempBoard)
+            if self.checkLegalMove() or self.checkCapture():
+                self.tempBoard[row][col]=self.pieceSelected
+                #print(self.tempBoard)
+                print(self.isBlacksTurn,not self.checkKingInCheck())
+                if (not self.checkKingInCheck()) or (not self.isBlacksTurn):
+                    self.board= self.tempBoard
                     if self.pieceCaptured:
                         self.whichPieceCaptured.kill()
-                    self.board=self.tempBoard
                     self.pieceSelected.hasMoved = True
                     self.pieceSelected.unselect()
                     self.pieceSelected = 0
                     self.isPieceSelected = False
-                    break
                 else:
-                    self.tempBoard=self.board
+                    print("asdfas")
+                    self.board[self.startPosRow][self.startPosCol] = self.pieceSelected
+                    self.board[self.endPosRow][self.endPosCol] = 0
+                    self.pieceCaptured=False
+                    self.whichPieceCaptured = 0
+                    #print("check")
     def returnBoard(self):
         return self.board
     def returnSprites(self):
@@ -129,6 +163,13 @@ class ChessBoard ():
         QueenInstance = Queen(0,0,whitePawnImg,0)
         RookInstance = Rook(0,0,whitePawnImg,0)
 
+        illegalPawnMoves = []
+        illegalKnightMoves = []
+        illegalBishopMoves = []
+        illegalRookMoves = []
+        illegalQueenMoves = []
+
+
         #locate white king
         for i in range(8):
             for j in range(8):
@@ -139,14 +180,18 @@ class ChessBoard ():
         #check pawn checks
         if(kingRow-1 >= 0) and (kingCol-1 >= 0) and type(board[kingRow-1][kingCol-1]) == type(PawnInstance) and board[kingRow-1][kingCol-1].isBlack:
             return True
+            illegalPawnMoves.append((kingRow-1,kingCol-1))
         elif (kingRow-1 >= 0) and (kingCol+1 < 8) and type(board[kingRow-1][kingCol+1]) == type(PawnInstance) and board[kingRow-1][kingCol+1].isBlack:
             return True
+            illegalPawnMoves.append((kingRow-1,kingCol+1))
+
         #check knight checks
         knightMovesCol = [-2,-2,-1,-1,1,1,2,2]
         knightMovesRow = [-1,1,-2,2,-2,2,-1,1]
         for i in range(8):
             if(kingRow+knightMovesRow[i]<8 and kingRow+knightMovesRow[i]>=0) and (kingCol+knightMovesCol[i]<8 and kingCol+knightMovesCol[i]>=0) and type(board[kingRow+knightMovesRow[i]][kingCol+knightMovesCol[i]]) == type(KnightInstance) and board[kingRow+knightMovesRow[i]][kingCol+knightMovesCol[i]].isBlack:
                 return True
+                illegalKnightMoves.append((kingRow+knightMovesRow[i],kingCol+knightMovesCol[i]))
         #check diagonal checks
         for i in range(1,8):
             if (kingRow+i < 8 and kingCol+i<8) and board[kingRow+i][kingCol+i] != 0:
@@ -154,6 +199,9 @@ class ChessBoard ():
                     break
                 elif (type(board[kingRow+i][kingCol+i])==type(BishopInstance) or type(board[kingRow+i][kingCol+i])==type(QueenInstance)):
                     return True
+                    illegalBishopMoves.append((kingRow+i,kingCol+i))
+                    illegalQueenMoves.append((kingRow+i,kingCol+i))
+
                 else:
                     break
         for i in range(1,8):
@@ -162,6 +210,8 @@ class ChessBoard ():
                     break
                 elif (type(board[kingRow-i][kingCol+i])==type(BishopInstance) or type(board[kingRow-i][kingCol+i])==type(QueenInstance)):
                     return True
+                    illegalBishopMoves.append((kingRow-i,kingCol+i))
+                    illegalQueenMoves.append((kingRow-i,kingCol+i))
                 else:
                     break
         for i in range(1,8):
@@ -170,6 +220,8 @@ class ChessBoard ():
                     break
                 elif (type(board[kingRow+i][kingCol-i])==type(BishopInstance) or type(board[kingRow+i][kingCol-i])==type(QueenInstance)):
                     return True
+                    illegalBishopMoves.append((kingRow+i,kingCol-i))
+                    illegalQueenMoves.append((kingRow+i,kingCol-i))
                 else:
                     break
         for i in range(1,8):
@@ -178,6 +230,8 @@ class ChessBoard ():
                     break
                 elif (type(board[kingRow-i][kingCol-i])==type(BishopInstance) or type(board[kingRow-i][kingCol-i])==type(QueenInstance)):
                     return True
+                    illegalBishopMoves.append((kingRow-i,kingCol-i))
+                    illegalQueenMoves.append((kingRow-i,kingCol-i))
                 else:
                     break
         #check file checks
@@ -187,6 +241,8 @@ class ChessBoard ():
                     break
                 elif (type(board[kingRow+i][kingCol])==type(RookInstance) or type(board[kingRow+i][kingCol])==type(QueenInstance)):
                     return True
+                    illegalRookMoves.append((kingRow+i,kingCol))
+                    illegalQueenMoves.append((kingRow+i,kingCol))
                 else:
                     break
         for i in range(1,8):
@@ -195,6 +251,8 @@ class ChessBoard ():
                     break
                 elif (type(board[kingRow][kingCol+i])==type(RookInstance) or type(board[kingRow][kingCol+i])==type(QueenInstance)):
                     return True
+                    illegalRookMoves.append((kingRow,kingCol+i))
+                    illegalQueenMoves.append((kingRow,kingCol+i))
                 else:
                     break
         for i in range(1,8):
@@ -203,6 +261,8 @@ class ChessBoard ():
                     break
                 elif (type(board[kingRow-i][kingCol])==type(RookInstance) or type(board[kingRow-i][kingCol])==type(QueenInstance)):
                     return True
+                    illegalRookMoves.append((kingRow-i,kingCol))
+                    illegalQueenMoves.append((kingRow-i,kingCol))
                 else:
                     break
         for i in range(1,8):
@@ -211,6 +271,9 @@ class ChessBoard ():
                     break
                 elif (type(board[kingRow][kingCol-i])==type(RookInstance) or type(board[kingRow][kingCol-i])==type(QueenInstance)):
                     return True
+                    illegalRookMoves.append((kingRow,kingCol-i))
+                    illegalQueenMoves.append((kingRow,kingCol-i))
                 else:
                     break
         return False
+        return illegalPawnMoves,illegalKnightMoves,illegalBishopMoves,illegalRookMoves,illegalQueenMoves

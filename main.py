@@ -67,7 +67,7 @@ def ChessGame():
                 crashed = True
                 print(event)
             if event.type == pygame.MOUSEBUTTONUP:
-                board.mouseClick(pygame.mouse.get_pos())
+                    board.mouseClick(pygame.mouse.get_pos())
         pygame.display.update()
         all_sprites.update()
         all_sprites.draw(gameDisplay)

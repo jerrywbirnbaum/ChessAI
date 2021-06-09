@@ -103,22 +103,22 @@ class Bishop(Piece):
         super().__init__(x,y,img,gameDisplay)
     def getPeacefulMoves(self,board):
         legalMoves = []
-        for i in range(8):
+        for i in range(1,8):
             if (self.row+i < 8 and self.col+i<8) and board[self.row+i][self.col+i] == 0:
                 legalMoves.append((self.row+i,self.col+i))
             else:
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.row-i >= 0 and self.col+i<8) and board[self.row-i][self.col+i] == 0:
                 legalMoves.append((self.row-i,self.col+i))
             else:
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.row+i < 8 and self.col-i >=0) and board[self.row+i][self.col-i] == 0:
                 legalMoves.append((self.row+i,self.col-i))
             else:
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.row-i >=0 and self.col-i>=0) and board[self.row-i][self.col-i] == 0:
                 legalMoves.append((self.row-i,self.col-i))
             else:
@@ -126,28 +126,28 @@ class Bishop(Piece):
         return legalMoves
     def getCaptureMoves(self,board):
         captureMoves=[]
-        for i in range(8):
+        for i in range(1,8):
             if (self.row+i < 8 and self.col+i<8):
                 if(board[self.row+i][self.col+i] != 0) and board[self.row+i][self.col+i].isBlack != self.isBlack:
                     captureMoves.append((self.row+i,self.col+i))
                     break
             else:
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.row-i >= 0 and self.col+i<8):
                 if(board[self.row-i][self.col+i] != 0) and board[self.row-i][self.col+i].isBlack != self.isBlack:
                     captureMoves.append((self.row-i,self.col+i))
                     break
             else:
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.row+i < 8 and self.col-i >=0):
                 if board[self.row+i][self.col-i] != 0 and board[self.row+i][self.col-i].isBlack != self.isBlack:
                     captureMoves.append((self.row+i,self.col-i))
                     break
             else:
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.row-i >=0 and self.col-i>=0):
                 if board[self.row-i][self.col-i] != 0 and board[self.row-i][self.col-i].isBlack != self.isBlack:
                     captureMoves.append((self.row-i,self.col-i))
@@ -183,22 +183,26 @@ class Rook(Piece):
 
     def getPeacefulMoves(self,board):
         legalMoves = []
-        for i in range(8):
+        #print(self.row,self.col)
+        #print(board[3][6])
+        for i in range(1,8):
             if (self.row+i < 8) and board[self.row+i][self.col] == 0:
+                #print(board[self.row+i][self.col])
+                print("hi")
                 legalMoves.append((self.row+i,self.col))
             else:
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.row-i >= 0) and board[self.row-i][self.col] == 0:
                 legalMoves.append((self.row-i,self.col))
             else:
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.col+i <8) and board[self.row][self.col+i] == 0:
                 legalMoves.append((self.row,self.col+i))
             else:
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.col-i>=0) and board[self.row][self.col-i] == 0:
                 legalMoves.append((self.row,self.col-i))
             else:
@@ -207,19 +211,19 @@ class Rook(Piece):
 
     def getCaptureMoves(self,board):
         captureMoves = []
-        for i in range(8):
+        for i in range(1,8):
             if (self.row+i < 8) and (board[self.row+i][self.col] != 0) and (board[self.row+i][self.col].isBlack != self.isBlack):
                 captureMoves.append((self.row+i,self.col))
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.row-i >= 0) and board[self.row-i][self.col] != 0 and board[self.row-i][self.col].isBlack != self.isBlack:
                 captureMoves.append((self.row-i,self.col))
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.col+i <8) and board[self.row][self.col+i] != 0 and board[self.row][self.col+i].isBlack != self.isBlack:
                 captureMoves.append((self.row,self.col+i))
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.col-i>=0) and board[self.row][self.col-i] != 0 and board[self.row][self.col-i].isBlack != self.isBlack :
                 captureMoves.append((self.row,self.col-i))
                 break
@@ -230,42 +234,42 @@ class Queen(Piece):
         super().__init__(x,y,img,gameDisplay)
     def getPeacefulMoves(self,board):
         legalMoves = []
-        for i in range(8):
+        for i in range(1,8):
             if (self.row+i < 8) and board[self.row+i][self.col] == 0:
                 legalMoves.append((self.row+i,self.col))
             else:
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.row-i >= 0) and board[self.row-i][self.col] == 0:
                 legalMoves.append((self.row-i,self.col))
             else:
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.col+i <8) and board[self.row][self.col+i] == 0:
                 legalMoves.append((self.row,self.col+i))
             else:
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.col-i>=0) and board[self.row][self.col-i] == 0:
                 legalMoves.append((self.row,self.col-i))
             else:
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.row+i < 8 and self.col+i<8) and board[self.row+i][self.col+i] == 0:
                 legalMoves.append((self.row+i,self.col+i))
             else:
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.row-i >= 0 and self.col+i<8) and board[self.row-i][self.col+i] == 0:
                 legalMoves.append((self.row-i,self.col+i))
             else:
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.row+i < 8 and self.col-i >=0) and board[self.row+i][self.col-i] == 0:
                 legalMoves.append((self.row+i,self.col-i))
             else:
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.row-i >=0 and self.col-i>=0) and board[self.row-i][self.col-i] == 0:
                 legalMoves.append((self.row-i,self.col-i))
             else:
@@ -273,44 +277,44 @@ class Queen(Piece):
         return legalMoves
     def getCaptureMoves(self,board):
         captureMoves = []
-        for i in range(8):
+        for i in range(1,8):
             if (self.row+i < 8) and (board[self.row+i][self.col] != 0) and (board[self.row+i][self.col].isBlack != self.isBlack):
                 captureMoves.append((self.row+i,self.col))
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.row-i >= 0) and board[self.row-i][self.col] != 0 and board[self.row-i][self.col].isBlack != self.isBlack:
                 captureMoves.append((self.row-i,self.col))
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.col+i <8) and board[self.row][self.col+i] != 0 and board[self.row][self.col+i].isBlack != self.isBlack:
                 captureMoves.append((self.row,self.col+i))
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.col-i>=0) and board[self.row][self.col-i] != 0 and board[self.row][self.col-i].isBlack != self.isBlack :
                 captureMoves.append((self.row,self.col-i))
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.row+i < 8 and self.col+i<8):
                 if(board[self.row+i][self.col+i] != 0) and board[self.row+i][self.col+i].isBlack != self.isBlack:
                     captureMoves.append((self.row+i,self.col+i))
                     break
             else:
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.row-i >= 0 and self.col+i<8):
                 if(board[self.row-i][self.col+i] != 0) and board[self.row-i][self.col+i].isBlack != self.isBlack:
                     captureMoves.append((self.row-i,self.col+i))
                     break
             else:
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.row+i < 8 and self.col-i >=0):
                 if board[self.row+i][self.col-i] != 0 and board[self.row+i][self.col-i].isBlack != self.isBlack:
                     captureMoves.append((self.row+i,self.col-i))
                     break
             else:
                 break
-        for i in range(8):
+        for i in range(1,8):
             if (self.row-i >=0 and self.col-i>=0):
                 if board[self.row-i][self.col-i] != 0 and board[self.row-i][self.col-i].isBlack != self.isBlack:
                     captureMoves.append((self.row-i,self.col-i))
