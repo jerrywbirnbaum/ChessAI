@@ -188,7 +188,6 @@ class Rook(Piece):
         for i in range(1,8):
             if (self.row+i < 8) and board[self.row+i][self.col] == 0:
                 #print(board[self.row+i][self.col])
-                print("hi")
                 legalMoves.append((self.row+i,self.col))
             else:
                 break

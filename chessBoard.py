@@ -131,10 +131,11 @@ class ChessBoard ():
             self.endPosCol = col
             self.tempBoard = self.board
             #print(self.tempBoard)
+            print(self.checkLongCastle(self.pieceSelected))
             if self.checkLegalMove() or self.checkCapture():
                 self.tempBoard[row][col]=self.pieceSelected
                 #print(self.tempBoard)
-                print(self.isBlacksTurn,not self.checkKingInCheck())
+                #print(self.isBlacksTurn,not self.checkKingInCheck())
                 if (not self.checkKingInCheck()) or (not self.isBlacksTurn):
                     self.board= self.tempBoard
                     if self.pieceCaptured:
@@ -144,16 +145,69 @@ class ChessBoard ():
                     self.pieceSelected = 0
                     self.isPieceSelected = False
                 else:
-                    print("asdfas")
                     self.board[self.startPosRow][self.startPosCol] = self.pieceSelected
                     self.board[self.endPosRow][self.endPosCol] = 0
                     self.pieceCaptured=False
                     self.whichPieceCaptured = 0
                     #print("check")
+            elif self.startPosRow == self.endPosRow and self.startPosCol == self.endPosCol:
+                self.board[row][col] = self.pieceSelected
+                self.pieceSelected.unselect()
+                self.pieceSelected = 0
+                self.isPieceSelected= False
+                self.isBlacksTurn= not self.isBlacksTurn
+            elif self.checkLongCastle(self.pieceSelected) and self.endPosRow == 0 or self.endPosRow == 7 and self.endPosCol == 2:
+                if not self.pieceSelected.isBlack:
+                    self.board[7][3]=self.board[7][0]
+                    self.board[7][0] = 0
+                    self.board[7][2]= self.pieceSelected
+                    self.board[7][4] = 0
+                    self.board[7][3].row = 7
+                    self.board[7][3].col = 3
+                    self.board[7][3].rect.topleft = (3*64,7*64)
+                    self.pieceSelected.unselect()
+                    self.pieceSelected = 0
+                    self.isPieceSelected=False
+                else:
+                    self.board[0][3]=self.board[0][0]
+                    self.board[0][0] = 0
+                    self.board[0][2]= self.pieceSelected
+                    self.board[0][4] = 0
+                    self.board[0][3].row = 0
+                    self.board[0][3].col = 3
+                    self.board[0][3].rect.topleft = (3*64,0)
+                    self.pieceSelected.unselect()
+                    self.pieceSelected = 0
+                    self.isPieceSelected=False
+
     def returnBoard(self):
         return self.board
     def returnSprites(self):
         return self.all_sprites
+    def checkLongCastle(self,king):
+        KingInstance = King(0,0,whiteKingImg,0)
+        RookInstance = Rook(0,0,whiteRookImg,0)
+        KnightInstance = Knight(0,0,whitePawnImg,0)
+        BishopInstance = Bishop(0,0,whitePawnImg,0)
+        QueenInstance = Queen(0,0,whitePawnImg,0)
+
+        if type(self.pieceSelected)== type(KingInstance) and type(self.board[7][0]) == type(RookInstance) and not self.pieceSelected.hasMoved and not self.board[7][0].hasMoved and not self.pieceSelected.isBlack:
+            if(self.board[7][1] == 0 and self.board[7][2] == 0 and self.board [7][3] == 0):
+                for i in range(1,3):
+                    if(self.squareInCheck(self.board,7,i)):
+                        return False
+                return True
+        elif type(self.pieceSelected)== type(KingInstance) and type(self.board[0][0]) == type(RookInstance) and not self.pieceSelected.hasMoved and not self.board[0][0].hasMoved and self.pieceSelected.isBlack:
+            if(self.board[0][1] == 0 and self.board[0][2] == 0 and self.board [0][3] == 0):
+                for i in range(1,3):
+                    if(self.squareInCheck(self.board,0,i)):
+                        return False
+                return True
+
+        return False
+    def checkShortCastle(self,king):
+        return False
+
 
     def whiteKingInCheck(self,board):
         KingInstance=King(0,0,whiteKingImg,0)
@@ -277,3 +331,115 @@ class ChessBoard ():
                     break
         return False
         return illegalPawnMoves,illegalKnightMoves,illegalBishopMoves,illegalRookMoves,illegalQueenMoves
+
+    def squareInCheck(self,board,row,col):
+        KingInstance=King(0,0,whiteKingImg,0)
+        PawnInstance = Pawn(0,0,whitePawnImg,0)
+        KnightInstance = Knight(0,0,whitePawnImg,0)
+        BishopInstance = Bishop(0,0,whitePawnImg,0)
+        QueenInstance = Queen(0,0,whitePawnImg,0)
+        RookInstance = Rook(0,0,whitePawnImg,0)
+
+        #quaretocheck
+        kingRow=row
+        kingCol=col
+
+        #check pawn checks
+        if(kingRow-1 >= 0) and (kingCol-1 >= 0) and type(board[kingRow-1][kingCol-1]) == type(PawnInstance) and board[kingRow-1][kingCol-1].isBlack:
+            return True
+            illegalPawnMoves.append((kingRow-1,kingCol-1))
+        elif (kingRow-1 >= 0) and (kingCol+1 < 8) and type(board[kingRow-1][kingCol+1]) == type(PawnInstance) and board[kingRow-1][kingCol+1].isBlack:
+            return True
+            illegalPawnMoves.append((kingRow-1,kingCol+1))
+
+        #check knight checks
+        knightMovesCol = [-2,-2,-1,-1,1,1,2,2]
+        knightMovesRow = [-1,1,-2,2,-2,2,-1,1]
+        for i in range(8):
+            if(kingRow+knightMovesRow[i]<8 and kingRow+knightMovesRow[i]>=0) and (kingCol+knightMovesCol[i]<8 and kingCol+knightMovesCol[i]>=0) and type(board[kingRow+knightMovesRow[i]][kingCol+knightMovesCol[i]]) == type(KnightInstance) and board[kingRow+knightMovesRow[i]][kingCol+knightMovesCol[i]].isBlack:
+                return True
+                illegalKnightMoves.append((kingRow+knightMovesRow[i],kingCol+knightMovesCol[i]))
+        #check diagonal checks
+        for i in range(1,8):
+            if (kingRow+i < 8 and kingCol+i<8) and board[kingRow+i][kingCol+i] != 0:
+                if not board[kingRow+i][kingCol+i].isBlack:
+                    break
+                elif (type(board[kingRow+i][kingCol+i])==type(BishopInstance) or type(board[kingRow+i][kingCol+i])==type(QueenInstance)):
+                    return True
+                    illegalBishopMoves.append((kingRow+i,kingCol+i))
+                    illegalQueenMoves.append((kingRow+i,kingCol+i))
+
+                else:
+                    break
+        for i in range(1,8):
+            if (kingRow-i >= 0 and kingCol+i<8) and board[kingRow-i][kingCol+i] != 0:
+                if not board[kingRow-i][kingCol+i].isBlack:
+                    break
+                elif (type(board[kingRow-i][kingCol+i])==type(BishopInstance) or type(board[kingRow-i][kingCol+i])==type(QueenInstance)):
+                    return True
+                    illegalBishopMoves.append((kingRow-i,kingCol+i))
+                    illegalQueenMoves.append((kingRow-i,kingCol+i))
+                else:
+                    break
+        for i in range(1,8):
+            if (kingRow+i < 8 and kingCol-i >= 0) and board[kingRow+i][kingCol-i] != 0:
+                if not board[kingRow+i][kingCol-i].isBlack:
+                    break
+                elif (type(board[kingRow+i][kingCol-i])==type(BishopInstance) or type(board[kingRow+i][kingCol-i])==type(QueenInstance)):
+                    return True
+                    illegalBishopMoves.append((kingRow+i,kingCol-i))
+                    illegalQueenMoves.append((kingRow+i,kingCol-i))
+                else:
+                    break
+        for i in range(1,8):
+            if (kingRow-i >= 0 and kingCol-i >= 0) and board[kingRow-i][kingCol-i] != 0:
+                if not board[kingRow-i][kingCol-i].isBlack:
+                    break
+                elif (type(board[kingRow-i][kingCol-i])==type(BishopInstance) or type(board[kingRow-i][kingCol-i])==type(QueenInstance)):
+                    return True
+                    illegalBishopMoves.append((kingRow-i,kingCol-i))
+                    illegalQueenMoves.append((kingRow-i,kingCol-i))
+                else:
+                    break
+        #check file checks
+        for i in range(1,8):
+            if (kingRow+i < 8) and board[kingRow+i][kingCol] != 0:
+                if not board[kingRow+i][kingCol].isBlack:
+                    break
+                elif (type(board[kingRow+i][kingCol])==type(RookInstance) or type(board[kingRow+i][kingCol])==type(QueenInstance)):
+                    return True
+                    illegalRookMoves.append((kingRow+i,kingCol))
+                    illegalQueenMoves.append((kingRow+i,kingCol))
+                else:
+                    break
+        for i in range(1,8):
+            if (kingCol+i < 8) and board[kingRow][kingCol+i] != 0:
+                if not board[kingRow][kingCol+i].isBlack:
+                    break
+                elif (type(board[kingRow][kingCol+i])==type(RookInstance) or type(board[kingRow][kingCol+i])==type(QueenInstance)):
+                    return True
+                    illegalRookMoves.append((kingRow,kingCol+i))
+                    illegalQueenMoves.append((kingRow,kingCol+i))
+                else:
+                    break
+        for i in range(1,8):
+            if (kingRow-i >= 0) and board[kingRow-i][kingCol] != 0:
+                if not board[kingRow-i][kingCol].isBlack:
+                    break
+                elif (type(board[kingRow-i][kingCol])==type(RookInstance) or type(board[kingRow-i][kingCol])==type(QueenInstance)):
+                    return True
+                    illegalRookMoves.append((kingRow-i,kingCol))
+                    illegalQueenMoves.append((kingRow-i,kingCol))
+                else:
+                    break
+        for i in range(1,8):
+            if (kingCol-i >= 0) and board[kingRow][kingCol-i] != 0:
+                if not board[kingRow][kingCol-i].isBlack:
+                    break
+                elif (type(board[kingRow][kingCol-i])==type(RookInstance) or type(board[kingRow][kingCol-i])==type(QueenInstance)):
+                    return True
+                    illegalRookMoves.append((kingRow,kingCol-i))
+                    illegalQueenMoves.append((kingRow,kingCol-i))
+                else:
+                    break
+        return False
