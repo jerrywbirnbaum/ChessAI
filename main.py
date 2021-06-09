@@ -41,51 +41,9 @@ def ChessGame():
     #init sprites
     all_sprites = pygame.sprite.Group()
     board= ChessBoard(gameDisplay)
-    #pawna7=Pawn(0,64,blackPawnImg,gameDisplay)
-    '''
-    pawnb7=Pawn(64,64,blackPawnImg)
-    pawnc7=Pawn(128,64,blackPawnImg)
-    pawnd7=Pawn(192,64,blackPawnImg)
-    pawne7=Pawn(256,64,blackPawnImg)
-    pawnf7=Pawn(320,64,blackPawnImg)
-    pawng7=Pawn(384,64,blackPawnImg)
-    pawnh7=Pawn(448,64,blackPawnImg)
-
-    pawna2=Pawn(0,384,whitePawnImg)
-    pawnb2=Pawn(64,384,whitePawnImg)
-    pawnc2=Pawn(128,384,whitePawnImg)
-    pawnd2=Pawn(192,384,whitePawnImg)
-    pawne2=Pawn(256,384,whitePawnImg)
-    pawnf2=Pawn(320,384,whitePawnImg)
-    pawng2=Pawn(384,384,whitePawnImg)
-    pawnh2=Pawn(448,384,whitePawnImg)
-    bishopc8=Bishop(128,0,blackBishopImg)
-    bishopf8=Bishop(320,0,blackBishopImg)
-    bishopc1=Bishop(128,448,whiteBishopImg)
-    bishopf1=Bishop(320,448,whiteBishopImg)
-
-    knightb8=Knight(64,0,blackKnightImg)
-    knightg8=Knight(384,0,blackKnightImg)
-    knightb1=Knight(64,448,whiteKnightImg)
-    knightg1=Knight(384,448,whiteKnightImg)
-
-    rooka8=Rook(0,0,blackRookImg)
-    rookh8=Rook(448,0,blackRookImg)
-    rooka1=Rook(0,448,whiteRookImg)
-    rookh1=Rook(448,448,whiteRookImg)
-
-    blackqueen=Queen(192,0,blackQueenImg)
-    whitequeen=Queen(192,448,whiteQueenImg)
-    blackking=King(256,0,blackKingImg)
-    whiteking=King(256,448,whiteKingImg)
-    '''
 
     all_sprites = board.returnSprites()
-    #all_sprites.add(pawna7)
-    #all_sprites.add(pawna7,pawnb7,pawnc7,pawnd7,pawne7,pawnf7,pawng7,pawnh7)
-    #all_sprites.add(pawna2,pawnb2,pawnc2,pawnd2,pawne2,pawnf2,pawng2,pawnh2)
-    #all_sprites.add(bishopc8,bishopf8,bishopc1,bishopf1)
-    #all_sprites.add(knightb1,knightb8,knightg1,knightg8,rooka1,rooka8,rookh1,rookh8,blackqueen,whitequeen,blackking,whiteking)
+
 
     #Draw chess board
     increment = dis_width/8
